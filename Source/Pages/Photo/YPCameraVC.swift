@@ -135,10 +135,9 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
     }
     
     func shoot() {
-        // Prevent from tapping multiple times in a row
-        // causing a crash
+    
         v.shotButton.isEnabled = false
-
+    
         photoCapture.shoot { imageData in
             
             guard let shotImage = UIImage(data: imageData) else {
@@ -148,14 +147,37 @@ internal final class YPCameraVC: UIViewController, UIGestureRecognizerDelegate, 
             self.photoCapture.stopCamera()
             
             var image = shotImage
-            // Crop the image if the output needs to be square.
+    
             if YPConfig.onlySquareImagesFromCamera {
                 image = self.cropImageToSquare(image)
             }
-
-            // Flip image if taken form the front camera.
+    
+    
             if let device = self.photoCapture.device, device.position == .front {
-                image = self.flipImage(image: image)
+                
+                let orientation: UIDeviceOrientation = YPDeviceOrientationHelper.shared.currentDeviceOrientation
+                
+                switch orientation {
+                case .landscapeLeft, .landscapeRight:
+                    image = image.withHorizontallyFlippedOrientation()
+                case .portrait:
+                    let imageSize: CGSize = image.size
+                    UIGraphicsBeginImageContextWithOptions(imageSize, true, 1.0)
+                    let ctx = UIGraphicsGetCurrentContext()!
+                    ctx.rotate(by: CGFloat(Double.pi/2.0))
+                    ctx.translateBy(x: 0, y: -imageSize.width)
+                    ctx.scaleBy(x: imageSize.height/imageSize.width, y: imageSize.width/imageSize.height)
+                    ctx.draw(image.cgImage!, in: CGRect(x: 0.0,
+                                                        y: 0.0,
+                                                        width: imageSize.width,
+                                                        height: imageSize.height))
+                    let newImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+                    UIGraphicsEndImageContext()
+                    image = newImage
+                default:
+                    image = image.withHorizontallyFlippedOrientation()
+                }
+                
             }
             
             let noOrietationImage = image.resetOrientation()
