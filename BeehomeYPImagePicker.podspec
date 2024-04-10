@@ -1,13 +1,12 @@
 Pod::Spec.new do |s|
-  s.name             = 'YPImagePicker'
-  s.version          = "5.2.2"
+  s.name             = 'BeehomeYPImagePicker'
+  s.version          = "5.2.3"
   s.summary          = "Instagram-like image picker & filters for iOS"
-  s.homepage         = "https://github.com/Yummypets/YPImagePicker"
+  s.homepage         = "https://github.com/U-I-2/YPImagePicker"
   s.license          = { :type => "MIT", :file => "LICENSE" }
-  s.authors = { 'S4cha'   => 'https://twitter.com/sachadso',
-                'NikeKov' => 'nikkovios@gmail.com' }
+  s.authors = { "Beehome" => "info@beehome.company" }
   s.platform         = :ios
-  s.source           = { :git => "https://github.com/Yummypets/YPImagePicker.git",
+  s.source           = { :git => "https://github.com/U-I-2/YPImagePicker.git",
                          :tag => s.version.to_s }
   s.ios.deployment_target = "12.0"
   s.source_files = 'Source/**/*.swift'
